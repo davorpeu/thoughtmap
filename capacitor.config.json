@@ -1,0 +1,5 @@
+{
+  "appId": "com.thoughtmap.app",
+  "appName": "ThoughtMap",
+  "webDir": "dist"
+}
