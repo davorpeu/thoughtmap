@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { MESSAGES, EMOTION_I18N, LANGUAGES } from './locales.js'
+import { MESSAGES, EMOTION_I18N, THOUGHT_I18N, DISTORTION_I18N, LANGUAGES } from './locales.js'
 
 const STORAGE_KEY = 'thoughtmap-locale'
 
@@ -35,6 +35,26 @@ export function tEmotion(name) {
   const entry = EMOTION_I18N[name]
   if (!entry) return name
   return entry[loc] ?? name
+}
+
+// Translate an automatic thought. Thoughts the user wrote themselves are not
+// in the table and pass through as typed.
+export function tThought(text) {
+  const loc = locale.value || 'en'
+  const entry = THOUGHT_I18N[text]
+  if (!entry) return text
+  return entry[loc] ?? text
+}
+
+// Translate a cognitive distortion name, and its one-line definition.
+export function tDistortion(key) {
+  const loc = locale.value || 'en'
+  return DISTORTION_I18N[key]?.[loc]?.name ?? DISTORTION_I18N[key]?.en?.name ?? key
+}
+
+export function tDistortionDesc(key) {
+  const loc = locale.value || 'en'
+  return DISTORTION_I18N[key]?.[loc]?.desc ?? DISTORTION_I18N[key]?.en?.desc ?? ''
 }
 
 export { LANGUAGES }

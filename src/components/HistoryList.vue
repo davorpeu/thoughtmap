@@ -1,11 +1,22 @@
 <script setup>
 import { formatDateTime, formatDDMMYYYY } from '../utils.js'
-import { t, tEmotion } from '../i18n.js'
+import { t, tEmotion, tThought, tDistortion } from '../i18n.js'
 
 defineProps({
   entries: { type: Array, default: () => [] },
 })
 defineEmits(['edit', 'delete'])
+
+// Entries saved before thoughts became a list carry a single `thought` string.
+function thoughtsOf(entry) {
+  if (entry.thoughts?.length) return entry.thoughts
+  if (entry.thought) return [{ name: entry.thought, intensity: null }]
+  return []
+}
+
+function byIntensity(list) {
+  return [...list].sort((a, b) => (b.intensity ?? 0) - (a.intensity ?? 0))
+}
 </script>
 
 <template>
@@ -32,19 +43,37 @@ defineEmits(['edit', 'delete'])
         <span class="block-label">{{ t('situation') }}</span>
         <p>{{ entry.situation }}</p>
       </div>
-      <div v-if="entry.thought" class="block">
-        <span class="block-label">{{ t('thought') }}</span>
-        <p>{{ entry.thought }}</p>
+      <div v-if="entry.symptoms" class="block">
+        <span class="block-label">{{ t('symptoms') }}</span>
+        <p>{{ entry.symptoms }}</p>
       </div>
 
-      <div v-if="entry.emotions.length" class="emotions">
-        <span
-          v-for="e in [...entry.emotions].sort((a, b) => b.intensity - a.intensity)"
-          :key="e.name"
-          class="etag"
-        >
+      <div v-if="thoughtsOf(entry).length" class="block">
+        <span class="block-label">{{ t('thoughts') }}</span>
+        <p v-for="th in byIntensity(thoughtsOf(entry))" :key="th.name" class="thought">
+          “{{ tThought(th.name) }}”
+          <b v-if="th.intensity !== null">{{ th.intensity }}%</b>
+        </p>
+      </div>
+
+      <div v-if="entry.emotions?.length" class="tags">
+        <span v-for="e in byIntensity(entry.emotions)" :key="e.name" class="tag">
           {{ tEmotion(e.name) }} <b>{{ e.intensity }}%</b>
         </span>
+      </div>
+
+      <div v-if="entry.distortions?.length" class="block">
+        <span class="block-label">{{ t('distortions') }}</span>
+        <div class="tags">
+          <span v-for="d in entry.distortions" :key="d" class="tag accent">
+            {{ tDistortion(d) }}
+          </span>
+        </div>
+      </div>
+
+      <div v-if="entry.response" class="block">
+        <span class="block-label">{{ t('response') }}</span>
+        <p>{{ entry.response }}</p>
       </div>
     </article>
   </div>
@@ -120,19 +149,30 @@ defineEmits(['edit', 'delete'])
   margin: 0;
   white-space: pre-wrap;
 }
-.emotions {
+.thought {
+  margin: 0.1rem 0 0;
+}
+.thought b {
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
 }
-.etag {
+.tag {
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: 999px;
   padding: 0.25rem 0.7rem;
   font-size: 0.85rem;
 }
-.etag b {
+.tag b {
+  color: var(--accent);
+}
+.tag.accent {
+  border-color: var(--accent);
   color: var(--accent);
 }
 </style>

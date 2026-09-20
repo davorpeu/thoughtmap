@@ -1,53 +1,76 @@
 <script setup>
 import { ref, watch } from 'vue'
-import EmotionSelect from './EmotionSelect.vue'
-import { t } from '../i18n.js'
+import ChipSelect from './ChipSelect.vue'
+import { DEFAULT_EMOTIONS } from '../emotions.js'
+import { DEFAULT_THOUGHTS, DISTORTIONS } from '../thoughts.js'
+import { t, tEmotion, tThought, tDistortion, tDistortionDesc } from '../i18n.js'
 import { toDatetimeLocal, fromDatetimeLocal, newId } from '../utils.js'
 
 const props = defineProps({
   customEmotions: { type: Array, default: () => [] },
+  customThoughts: { type: Array, default: () => [] },
   editing: { type: Object, default: null },
 })
-const emit = defineEmits(['save', 'add-custom', 'cancel'])
+const emit = defineEmits([
+  'save',
+  'add-custom-emotion',
+  'add-custom-thought',
+  'delete-custom-thought',
+  'cancel',
+])
 
 function blank() {
   return {
     id: newId(),
     createdAtLocal: toDatetimeLocal(new Date().toISOString()),
     situation: '',
-    thought: '',
+    symptoms: '',
+    thoughts: [],
     emotions: [],
+    distortions: [],
+    response: '',
   }
 }
 
 const form = ref(blank())
 
-// When we get an entry to edit, load it into the form.
+// When we get an entry to edit, load it into the form. Entries written before
+// thoughts became a list carry a single `thought` string — bring it in as one
+// item so editing an old entry migrates it rather than dropping it.
 watch(
   () => props.editing,
   (e) => {
-    if (e) {
-      form.value = {
-        id: e.id,
-        createdAtLocal: toDatetimeLocal(e.createdAt),
-        situation: e.situation,
-        thought: e.thought,
-        emotions: e.emotions.map((x) => ({ ...x })),
-      }
+    if (!e) return
+    const thoughts = e.thoughts
+      ? e.thoughts.map((x) => ({ ...x }))
+      : e.thought
+        ? [{ name: e.thought, intensity: 50 }]
+        : []
+    form.value = {
+      id: e.id,
+      createdAtLocal: toDatetimeLocal(e.createdAt),
+      situation: e.situation || '',
+      symptoms: e.symptoms || '',
+      thoughts,
+      emotions: (e.emotions || []).map((x) => ({ ...x })),
+      distortions: [...(e.distortions || [])],
+      response: e.response || '',
     }
   },
   { immediate: true },
 )
 
 function submit() {
-  const entry = {
+  emit('save', {
     id: form.value.id,
     createdAt: fromDatetimeLocal(form.value.createdAtLocal),
     situation: form.value.situation.trim(),
-    thought: form.value.thought.trim(),
+    symptoms: form.value.symptoms.trim(),
+    thoughts: form.value.thoughts,
     emotions: form.value.emotions,
-  }
-  emit('save', entry)
+    distortions: form.value.distortions,
+    response: form.value.response.trim(),
+  })
   form.value = blank()
 }
 
@@ -76,22 +99,66 @@ function resetNow() {
     </label>
 
     <label class="field">
-      <span class="label">{{ t('thought') }}</span>
+      <span class="label">{{ t('symptoms') }}</span>
       <textarea
-        v-model="form.thought"
-        rows="3"
-        :placeholder="t('thoughtPlaceholder')"
+        v-model="form.symptoms"
+        rows="2"
+        :placeholder="t('symptomsPlaceholder')"
       ></textarea>
     </label>
 
     <div class="field">
-      <span class="label">{{ t('emotions') }}</span>
-      <EmotionSelect
-        v-model="form.emotions"
-        :custom-emotions="customEmotions"
-        @add-custom="$emit('add-custom', $event)"
+      <span class="label">{{ t('thoughts') }}</span>
+      <p class="hint">{{ t('thoughtsHint') }}</p>
+      <ChipSelect
+        v-model="form.thoughts"
+        :options="DEFAULT_THOUGHTS"
+        :custom-options="customThoughts"
+        :translate="tThought"
+        :placeholder="t('thoughtSearchPlaceholder')"
+        allow-custom
+        intensity
+        stacked
+        @add-custom="$emit('add-custom-thought', $event)"
+        @delete-custom="$emit('delete-custom-thought', $event)"
       />
     </div>
+
+    <div class="field">
+      <span class="label">{{ t('emotions') }}</span>
+      <ChipSelect
+        v-model="form.emotions"
+        :options="DEFAULT_EMOTIONS"
+        :custom-options="customEmotions"
+        :translate="tEmotion"
+        :placeholder="t('emotionSearchPlaceholder')"
+        allow-custom
+        intensity
+        sort
+        @add-custom="$emit('add-custom-emotion', $event)"
+      />
+    </div>
+
+    <div class="field">
+      <span class="label">{{ t('distortions') }}</span>
+      <ChipSelect
+        v-model="form.distortions"
+        :options="DISTORTIONS"
+        :translate="tDistortion"
+        :describe="tDistortionDesc"
+        :placeholder="t('distortionSearchPlaceholder')"
+        stacked
+      />
+    </div>
+
+    <label class="field">
+      <span class="label">{{ t('response') }}</span>
+      <textarea
+        v-model="form.response"
+        rows="3"
+        :placeholder="t('responsePlaceholder')"
+      ></textarea>
+    </label>
 
     <div class="actions">
       <button v-if="editing" type="button" class="secondary" @click="$emit('cancel')">
@@ -121,6 +188,11 @@ function resetNow() {
   letter-spacing: 0.05em;
   color: var(--muted);
   font-weight: 600;
+}
+.hint {
+  margin: -0.15rem 0 0.1rem;
+  font-size: 0.8rem;
+  color: var(--muted);
 }
 .datetime-row {
   display: flex;

@@ -7,7 +7,7 @@ on the device (IndexedDB). No server or internet is needed at runtime.
 ## Toolchain (already installed on this PC)
 
 - **Node.js** (for the Vue/Vite build)
-- **JDK 21** — `C:\Program Files\Microsoft\jdk-21.0.12.101-hotspot`
+- **JDK 21** — `C:\Program Files\Java\jdk-21`
   (Capacitor 7's Android library requires Java 21; JDK 17 fails with
   "invalid source release: 21".)
 - **Android SDK** — `C:\Android\sdk` (command-line tools + platform-tools,
@@ -23,7 +23,7 @@ npm run build
 npx cap sync android
 
 # 2. Build the debug APK (uses JDK 21 + the Android SDK)
-$env:JAVA_HOME = "C:\Program Files\Microsoft\jdk-21.0.12.101-hotspot"
+$env:JAVA_HOME = "C:\Program Files\Java\jdk-21"
 $env:ANDROID_SDK_ROOT = "C:\Android\sdk"
 Set-Location android
 .\gradlew.bat assembleDebug --no-daemon

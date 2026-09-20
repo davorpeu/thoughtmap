@@ -9,6 +9,9 @@ import {
   deleteEntry,
   getCustomEmotions,
   addCustomEmotion,
+  getCustomThoughts,
+  addCustomThought,
+  deleteCustomThought,
   exportAll,
   importAll,
 } from './db.js'
@@ -16,6 +19,7 @@ import {
 const tab = ref('new') // 'new' | 'history'
 const entries = ref([])
 const customEmotions = ref([])
+const customThoughts = ref([])
 const editing = ref(null)
 const fileInput = ref(null)
 const showLangPicker = ref(!hasLocale())
@@ -23,6 +27,7 @@ const showLangPicker = ref(!hasLocale())
 async function refresh() {
   entries.value = await getAllEntries()
   customEmotions.value = await getCustomEmotions()
+  customThoughts.value = await getCustomThoughts()
 }
 
 onMounted(() => {
@@ -46,9 +51,20 @@ async function onSave(entry) {
   }
 }
 
-async function onAddCustom(name) {
+async function onAddCustomEmotion(name) {
   await addCustomEmotion(name)
   customEmotions.value = await getCustomEmotions()
+}
+
+async function onAddCustomThought(text) {
+  await addCustomThought(text)
+  customThoughts.value = await getCustomThoughts()
+}
+
+// Drops the thought from the reusable library; entries that used it keep it.
+async function onDeleteCustomThought(text) {
+  await deleteCustomThought(text)
+  customThoughts.value = await getCustomThoughts()
 }
 
 function onEdit(entry) {
@@ -154,9 +170,12 @@ async function onImportFile(event) {
       <EntryForm
         v-show="tab === 'new'"
         :custom-emotions="customEmotions"
+        :custom-thoughts="customThoughts"
         :editing="editing"
         @save="onSave"
-        @add-custom="onAddCustom"
+        @add-custom-emotion="onAddCustomEmotion"
+        @add-custom-thought="onAddCustomThought"
+        @delete-custom-thought="onDeleteCustomThought"
         @cancel="cancelEdit"
       />
       <HistoryList
