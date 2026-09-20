@@ -1,5 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import { Capacitor } from '@capacitor/core'
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem'
+import { Share } from '@capacitor/share'
 import EntryForm from './components/EntryForm.vue'
 import HistoryList from './components/HistoryList.vue'
 import { t, locale, hasLocale, setLocale, applyDir, LANGUAGES } from './i18n.js'
@@ -86,12 +89,60 @@ function cancelEdit() {
 
 async function doExport() {
   const data = await exportAll()
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+  const json = JSON.stringify(data, null, 2)
+  const stamp = new Date().toISOString().slice(0, 10)
+  const name = `thoughtmap-backup-${stamp}.json`
+
+  // In the Android/iOS app a <a download> click is silently ignored by the
+  // WebView, so write a real file and hand it to the system share sheet.
+  if (Capacitor.isNativePlatform()) {
+    let uri
+    let inDocuments = true
+    try {
+      // The phone's shared Documents folder, so the file survives and is easy
+      // to find. Android 11+ may refuse it, so fall back to app storage and let
+      // the share sheet be the way the backup leaves the device.
+      try {
+        ;({ uri } = await Filesystem.writeFile({
+          path: name,
+          data: json,
+          directory: Directory.Documents,
+          encoding: Encoding.UTF8,
+          recursive: true,
+        }))
+      } catch {
+        inDocuments = false
+        ;({ uri } = await Filesystem.writeFile({
+          path: name,
+          data: json,
+          directory: Directory.Cache,
+          encoding: Encoding.UTF8,
+        }))
+      }
+    } catch (err) {
+      alert(t('exportError') + (err?.message || err))
+      return
+    }
+
+    if (inDocuments) alert(t('exportSaved') + name)
+    try {
+      await Share.share({
+        title: name,
+        text: t('exportShareText'),
+        url: uri,
+        dialogTitle: t('export'),
+      })
+    } catch {
+      // Share sheet dismissed — the file is already written, nothing to report.
+    }
+    return
+  }
+
+  const blob = new Blob([json], { type: 'application/json' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
-  const stamp = new Date().toISOString().slice(0, 10)
   a.href = url
-  a.download = `thoughtmap-backup-${stamp}.json`
+  a.download = name
   a.click()
   URL.revokeObjectURL(url)
 }

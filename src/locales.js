@@ -55,6 +55,9 @@ export const MESSAGES = {
       'Import backup?\n\nOK = replace everything with this backup.\nCancel = merge into existing entries.',
     importDone: 'Backup imported.',
     importError: 'Could not read that file: ',
+    exportShareText: 'ThoughtMap backup',
+    exportSaved: 'Backup saved to your Documents folder as ',
+    exportError: 'Could not export: ',
   },
   es: {
     chooseLanguage: 'Elige tu idioma',
@@ -95,6 +98,9 @@ export const MESSAGES = {
       '¿Importar copia de seguridad?\n\nAceptar = reemplazar todo con esta copia.\nCancelar = combinar con las entradas existentes.',
     importDone: 'Copia de seguridad importada.',
     importError: 'No se pudo leer el archivo: ',
+    exportShareText: 'Copia de seguridad de ThoughtMap',
+    exportSaved: 'Copia guardada en tu carpeta Documentos como ',
+    exportError: 'No se pudo exportar: ',
   },
   zh: {
     chooseLanguage: '选择您的语言',
@@ -135,6 +141,9 @@ export const MESSAGES = {
       '导入备份？\n\n确定 = 用此备份替换全部。\n取消 = 与现有记录合并。',
     importDone: '备份已导入。',
     importError: '无法读取该文件：',
+    exportShareText: 'ThoughtMap 备份',
+    exportSaved: '备份已保存到"文档"文件夹：',
+    exportError: '无法导出：',
   },
   hi: {
     chooseLanguage: 'अपनी भाषा चुनें',
@@ -175,6 +184,9 @@ export const MESSAGES = {
       'बैकअप आयात करें?\n\nठीक है = सब कुछ इस बैकअप से बदलें।\nरद्द करें = मौजूदा प्रविष्टियों के साथ मिलाएँ।',
     importDone: 'बैकअप आयात किया गया।',
     importError: 'यह फ़ाइल पढ़ी नहीं जा सकी: ',
+    exportShareText: 'ThoughtMap बैकअप',
+    exportSaved: 'बैकअप आपके Documents फ़ोल्डर में सहेजा गया: ',
+    exportError: 'निर्यात नहीं हो सका: ',
   },
   ar: {
     chooseLanguage: 'اختر لغتك',
@@ -215,6 +227,9 @@ export const MESSAGES = {
       'استيراد النسخة الاحتياطية؟\n\nموافق = استبدال كل شيء بهذه النسخة.\nإلغاء = الدمج مع الإدخالات الحالية.',
     importDone: 'تم استيراد النسخة الاحتياطية.',
     importError: 'تعذّر قراءة هذا الملف: ',
+    exportShareText: 'نسخة احتياطية من ThoughtMap',
+    exportSaved: 'تم حفظ النسخة في مجلد المستندات باسم ',
+    exportError: 'تعذّر التصدير: ',
   },
   pt: {
     chooseLanguage: 'Escolha o seu idioma',
@@ -255,6 +270,9 @@ export const MESSAGES = {
       'Importar cópia de segurança?\n\nOK = substituir tudo por esta cópia.\nCancelar = combinar com as entradas existentes.',
     importDone: 'Cópia de segurança importada.',
     importError: 'Não foi possível ler o ficheiro: ',
+    exportShareText: 'Cópia de segurança do ThoughtMap',
+    exportSaved: 'Cópia guardada na pasta Documentos como ',
+    exportError: 'Não foi possível exportar: ',
   },
   ru: {
     chooseLanguage: 'Выберите язык',
@@ -295,6 +313,9 @@ export const MESSAGES = {
       'Импортировать резервную копию?\n\nОК = заменить всё этой копией.\nОтмена = объединить с существующими записями.',
     importDone: 'Резервная копия импортирована.',
     importError: 'Не удалось прочитать файл: ',
+    exportShareText: 'Резервная копия ThoughtMap',
+    exportSaved: 'Копия сохранена в папку «Документы» как ',
+    exportError: 'Не удалось экспортировать: ',
   },
   fr: {
     chooseLanguage: 'Choisissez votre langue',
@@ -335,6 +356,9 @@ export const MESSAGES = {
       'Importer la sauvegarde ?\n\nOK = tout remplacer par cette sauvegarde.\nAnnuler = fusionner avec les entrées existantes.',
     importDone: 'Sauvegarde importée.',
     importError: 'Impossible de lire ce fichier : ',
+    exportShareText: 'Sauvegarde ThoughtMap',
+    exportSaved: 'Sauvegarde enregistrée dans Documents sous ',
+    exportError: "Impossible d'exporter : ",
   },
   de: {
     chooseLanguage: 'Wähle deine Sprache',
@@ -375,6 +399,9 @@ export const MESSAGES = {
       'Backup importieren?\n\nOK = alles durch dieses Backup ersetzen.\nAbbrechen = mit vorhandenen Einträgen zusammenführen.',
     importDone: 'Backup importiert.',
     importError: 'Datei konnte nicht gelesen werden: ',
+    exportShareText: 'ThoughtMap-Sicherung',
+    exportSaved: 'Sicherung im Ordner „Dokumente“ gespeichert als ',
+    exportError: 'Export fehlgeschlagen: ',
   },
   ja: {
     chooseLanguage: '言語を選択してください',
@@ -415,6 +442,9 @@ export const MESSAGES = {
       'バックアップをインポートしますか？\n\nOK = すべてをこのバックアップで置き換える。\nキャンセル = 既存の記録と統合する。',
     importDone: 'バックアップをインポートしました。',
     importError: 'ファイルを読み取れませんでした: ',
+    exportShareText: 'ThoughtMap のバックアップ',
+    exportSaved: 'バックアップをドキュメントフォルダーに保存しました：',
+    exportError: 'エクスポートできませんでした：',
   },
   hr: {
     chooseLanguage: 'Odaberite svoj jezik',
@@ -455,6 +485,9 @@ export const MESSAGES = {
       'Uvesti sigurnosnu kopiju?\n\nU redu = zamijeni sve ovom kopijom.\nOdustani = spoji s postojećim unosima.',
     importDone: 'Sigurnosna kopija uvezena.',
     importError: 'Nije moguće pročitati datoteku: ',
+    exportShareText: 'ThoughtMap sigurnosna kopija',
+    exportSaved: 'Kopija je spremljena u mapu Dokumenti kao ',
+    exportError: 'Izvoz nije uspio: ',
   },
 }
 
