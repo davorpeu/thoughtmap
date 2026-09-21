@@ -7,13 +7,6 @@ defineProps({
 })
 defineEmits(['edit', 'delete'])
 
-// Entries saved before thoughts became a list carry a single `thought` string.
-function thoughtsOf(entry) {
-  if (entry.thoughts?.length) return entry.thoughts
-  if (entry.thought) return [{ name: entry.thought, intensity: null }]
-  return []
-}
-
 function byIntensity(list) {
   return [...list].sort((a, b) => (b.intensity ?? 0) - (a.intensity ?? 0))
 }
@@ -43,14 +36,18 @@ function byIntensity(list) {
         <span class="block-label">{{ t('situation') }}</span>
         <p>{{ entry.situation }}</p>
       </div>
+      <div v-if="entry.thought" class="block">
+        <span class="block-label">{{ t('thought') }}</span>
+        <p>{{ entry.thought }}</p>
+      </div>
       <div v-if="entry.symptoms" class="block">
         <span class="block-label">{{ t('symptoms') }}</span>
         <p>{{ entry.symptoms }}</p>
       </div>
 
-      <div v-if="thoughtsOf(entry).length" class="block">
+      <div v-if="entry.thoughts?.length" class="block">
         <span class="block-label">{{ t('thoughts') }}</span>
-        <p v-for="th in byIntensity(thoughtsOf(entry))" :key="th.name" class="thought">
+        <p v-for="th in byIntensity(entry.thoughts)" :key="th.name" class="thought">
           “{{ tThought(th.name) }}”
           <b v-if="th.intensity !== null">{{ th.intensity }}%</b>
         </p>

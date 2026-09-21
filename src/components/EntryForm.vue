@@ -24,6 +24,7 @@ function blank() {
     id: newId(),
     createdAtLocal: toDatetimeLocal(new Date().toISOString()),
     situation: '',
+    thought: '',
     symptoms: '',
     thoughts: [],
     emotions: [],
@@ -34,24 +35,18 @@ function blank() {
 
 const form = ref(blank())
 
-// When we get an entry to edit, load it into the form. Entries written before
-// thoughts became a list carry a single `thought` string — bring it in as one
-// item so editing an old entry migrates it rather than dropping it.
+// When we get an entry to edit, load it into the form.
 watch(
   () => props.editing,
   (e) => {
     if (!e) return
-    const thoughts = e.thoughts
-      ? e.thoughts.map((x) => ({ ...x }))
-      : e.thought
-        ? [{ name: e.thought, intensity: 50 }]
-        : []
     form.value = {
       id: e.id,
       createdAtLocal: toDatetimeLocal(e.createdAt),
       situation: e.situation || '',
+      thought: e.thought || '',
       symptoms: e.symptoms || '',
-      thoughts,
+      thoughts: (e.thoughts || []).map((x) => ({ ...x })),
       emotions: (e.emotions || []).map((x) => ({ ...x })),
       distortions: [...(e.distortions || [])],
       response: e.response || '',
@@ -65,6 +60,7 @@ function submit() {
     id: form.value.id,
     createdAt: fromDatetimeLocal(form.value.createdAtLocal),
     situation: form.value.situation.trim(),
+    thought: form.value.thought.trim(),
     symptoms: form.value.symptoms.trim(),
     thoughts: form.value.thoughts,
     emotions: form.value.emotions,
@@ -95,6 +91,15 @@ function resetNow() {
         v-model="form.situation"
         rows="3"
         :placeholder="t('situationPlaceholder')"
+      ></textarea>
+    </label>
+
+    <label class="field">
+      <span class="label">{{ t('thought') }}</span>
+      <textarea
+        v-model="form.thought"
+        rows="3"
+        :placeholder="t('thoughtPlaceholder')"
       ></textarea>
     </label>
 
