@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { MESSAGES, EMOTION_I18N, THOUGHT_I18N, DISTORTION_I18N, LANGUAGES } from './locales.js'
+import { MESSAGES, EMOTION_I18N, THOUGHT_I18N, DISTORTION_I18N, DISTORTION_QUESTIONS, LANGUAGES } from './locales.js'
 
 const STORAGE_KEY = 'thoughtmap-locale'
 
@@ -37,8 +37,8 @@ export function tEmotion(name) {
   return entry[loc] ?? name
 }
 
-// Translate an automatic thought. Thoughts the user wrote themselves are not
-// in the table and pass through as typed.
+// Translate an automatic thought from the old picker (still shown on older
+// entries). Thoughts the user wrote themselves pass through as typed.
 export function tThought(text) {
   const loc = locale.value || 'en'
   const entry = THOUGHT_I18N[text]
@@ -55,6 +55,12 @@ export function tDistortion(key) {
 export function tDistortionDesc(key) {
   const loc = locale.value || 'en'
   return DISTORTION_I18N[key]?.[loc]?.desc ?? DISTORTION_I18N[key]?.en?.desc ?? ''
+}
+
+// The challenge question for a distortion, shown as a hint under the adaptive response.
+export function tDistortionQuestion(key) {
+  const loc = locale.value || 'en'
+  return DISTORTION_QUESTIONS[key]?.[loc] ?? DISTORTION_QUESTIONS[key]?.en ?? ''
 }
 
 export { LANGUAGES }

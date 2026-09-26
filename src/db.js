@@ -15,7 +15,8 @@ const dbPromise = openDB(DB_NAME, DB_VERSION, {
     if (!db.objectStoreNames.contains(CUSTOM_EMOTIONS)) {
       db.createObjectStore(CUSTOM_EMOTIONS, { keyPath: 'name' })
     }
-    // v2: the user's own automatic thoughts, reused across entries.
+    // v2: the user's own automatic thoughts, reused across entries. The picker
+    // was removed in 1.6; the store stays so old backups still round-trip.
     if (!db.objectStoreNames.contains(CUSTOM_THOUGHTS)) {
       db.createObjectStore(CUSTOM_THOUGHTS, { keyPath: 'text' })
     }
@@ -59,24 +60,6 @@ export async function getCustomEmotions() {
 export async function addCustomEmotion(name) {
   const db = await dbPromise
   await db.put(CUSTOM_EMOTIONS, { name })
-}
-
-// ---- Custom thoughts -----------------------------------------------------
-
-export async function getCustomThoughts() {
-  const db = await dbPromise
-  const rows = await db.getAll(CUSTOM_THOUGHTS)
-  return rows.map((r) => r.text)
-}
-
-export async function addCustomThought(text) {
-  const db = await dbPromise
-  await db.put(CUSTOM_THOUGHTS, { text })
-}
-
-export async function deleteCustomThought(text) {
-  const db = await dbPromise
-  await db.delete(CUSTOM_THOUGHTS, text)
 }
 
 // ---- Backup / restore ----------------------------------------------------

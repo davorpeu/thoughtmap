@@ -2,9 +2,8 @@
 import { ref, computed } from 'vue'
 import { t } from '../i18n.js'
 
-// A searchable multi-select over a list of canonical keys. Used three ways:
+// A searchable multi-select over a list of canonical keys. Used two ways:
 //   emotions    — intensity sliders, user can add their own
-//   thoughts    — intensity sliders (belief %), user can add their own
 //   distortions — plain chips, fixed list, each option carries a definition
 const props = defineProps({
   // With `intensity`: array of { name, intensity }. Without: array of strings.

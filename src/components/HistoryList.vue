@@ -39,12 +39,20 @@ function byIntensity(list) {
       <div v-if="entry.thought" class="block">
         <span class="block-label">{{ t('thought') }}</span>
         <p>{{ entry.thought }}</p>
+        <p v-if="entry.belief != null || entry.beliefAfter != null" class="belief">
+          {{ t('beliefShort') }}:
+          <b>{{ entry.belief != null ? entry.belief + '%' : '—' }}</b>
+          <template v-if="entry.beliefAfter != null">
+            → <b>{{ entry.beliefAfter }}%</b>
+          </template>
+        </p>
       </div>
       <div v-if="entry.symptoms" class="block">
         <span class="block-label">{{ t('symptoms') }}</span>
         <p>{{ entry.symptoms }}</p>
       </div>
 
+      <!-- Legacy: automatic thoughts picked from the old list (before 1.6). -->
       <div v-if="entry.thoughts?.length" class="block">
         <span class="block-label">{{ t('thoughts') }}</span>
         <p v-for="th in byIntensity(entry.thoughts)" :key="th.name" class="thought">
@@ -148,6 +156,14 @@ function byIntensity(list) {
 }
 .thought {
   margin: 0.1rem 0 0;
+}
+.belief {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.belief b {
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
 }
 .thought b {
   color: var(--accent);
